@@ -204,12 +204,21 @@ if st.session_state.results:
             f"{r.get('roll_no', 'Unknown')} • "
             f"{r.get('score', 0)}/{r.get('total_marks', max_marks)}"
         ):
-            if r.get("question_results"):
-                for qr in r["question_results"]:
-                    question = qr.get("question", "Unknown")
-                    marks = qr.get("marks_awarded", 0)
-                    max_q_marks = qr.get("max_marks", "")
-                    status = qr.get("status", "unclear")
+                    st.markdown(f"### Question {question}")
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.markdown("**Student Answer**")
+            st.write(qr.get("student_answer", "Not available"))
+
+        with col2:
+            st.markdown("**Correct Answer**")
+            st.write(qr.get("correct_answer", "Not available"))
+
+        with col3:
+            st.markdown("**AI Reason**")
+            st.write(qr.get("reason", "No reason provided."))
 
                     st.markdown(
                         f"### Question {question} — "
@@ -229,6 +238,16 @@ if st.session_state.results:
                     with c3:
                         st.markdown("**AI Reason**")
                         st.write(qr.get("reason", "No reason provided."))
+        teacher_marks = st.number_input(
+            f"Teacher marks — Question {question}",
+            min_value=0.0,
+            max_value=max_q_marks,
+            value=ai_marks,
+            step=0.5,
+            key=f"teacher_marks_{r_index}_{q_index}"
+        )
+
+        qr["teacher_marks"] = teacher_marks
 
                     st.divider()
             else:
